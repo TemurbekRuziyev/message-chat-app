@@ -1,20 +1,27 @@
 import React, { useEffect } from 'react';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import './App.css';
+import Welcome from './pages/Welcome';
 
 const socket = io('http://127.0.0.1:8080/');
 
-function App() {
-  useEffect(() => {
-    socket.on('connect', () => {
-      socket.on('welcome', message => {
-        console.log(message);
-      });
-    });
-  }, []);
+export const Context = React.createContext<{
+  socket: Socket;
+}>({
+  socket: socket
+});
 
-  return <div className="App">Welcome to the chat app</div>;
+function App() {
+  return (
+    <BrowserRouter>
+      <Context.Provider value={{ socket: socket }}>
+        <Routes>
+          <Route path="/" element={<Welcome />} />
+        </Routes>
+      </Context.Provider>
+    </BrowserRouter>
+  );
 }
 
 export default App;
