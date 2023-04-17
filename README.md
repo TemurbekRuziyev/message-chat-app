@@ -20,7 +20,7 @@
 * Clone the project
 
 ```bash
-  git clone https://github.com/TemurbekRuziyev/assessment.git
+   https://github.com/TemurbekRuziyev/message-chat-app
 ```
 
 * Go to the project directory
