@@ -46,10 +46,12 @@ io.on('connect', socket => {
     const user = users.find(user => user.id === socket.id);
     users = users.filter(user => user.id !== socket.id);
 
-    io.to(user.room).emit(
-      'users:list',
-      users.filter(user => user.room === user.room)
-    );
+    if (user) {
+      io.to(user.room).emit(
+        'users:list',
+        users.filter(item => item.room === user.room)
+      );
+    }
   });
 
   // Get all rooms in Welcome page
@@ -64,8 +66,8 @@ io.on('connect', socket => {
   });
 
   // Send all messages to client
-  socket.on('messages:list', (item, callback) => {
-    callback(messages);
+  socket.on('messages:list', (room, callback) => {
+    callback(messages.filter(message => message.room === room));
   });
 
   // Typing action

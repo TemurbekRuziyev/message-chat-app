@@ -21,6 +21,7 @@ const Messages = () => {
 
   const handleSubmit = ({ message }) => {
     socket.emit('message:send', {
+      room,
       message,
       createdAt: moment().format('DD.MM.YYYY HH:mm:ss'),
       username
@@ -117,7 +118,7 @@ const Messages = () => {
       }
     });
 
-    socket.emit('messages:list', '', messages => {
+    socket.emit('messages:list', params.room, messages => {
       setMessages(prevState => [...prevState, ...messages]);
     });
 
