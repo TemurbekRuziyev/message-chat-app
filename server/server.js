@@ -41,6 +41,17 @@ io.on('connect', socket => {
     );
   });
 
+  // Disconnecting
+  socket.on('disconnect', () => {
+    const user = users.find(user => user.id === socket.id);
+    users = users.filter(user => user.id !== socket.id);
+
+    io.to(user.room).emit(
+      'users:list',
+      users.filter(user => user.room === user.room)
+    );
+  });
+
   // Get all rooms in Welcome page
   socket.on('getRooms', () => {
     socket.emit('rooms:list', rooms);

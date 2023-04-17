@@ -7,7 +7,7 @@ interface IUser {
 }
 
 const Users = () => {
-  const { socket } = useContext(Context);
+  const { socket, username } = useContext(Context);
   const [users, setUsers] = useState<IUser[]>([]);
   const [typer, setTyper] = useState();
 
@@ -29,8 +29,7 @@ const Users = () => {
           key={user.username}
           className="flex items-center gap-1 p-3 rounded-xl dark:bg-slate-600 text-white text-sm mb-3"
         >
-          {user.username}
-
+          {user.username} {user.username === username && <>(me)</>}
           {user.username === typer && (
             <div className="typing ml-2">
               <span className="circle bouncing"></span>

@@ -27,12 +27,13 @@ const Messages = () => {
     });
   };
 
+  // Stop typing
   const stopTyping = () => {
     socket.emit('typing:clear', { username, room });
   };
 
   // Typing indication
-  const handleTyping = () => {
+  const startTyping = () => {
     socket.emit('typing', { room, username });
 
     clearTimeout(timer);
@@ -42,10 +43,42 @@ const Messages = () => {
     }, waitTime);
   };
 
+  // Leaving the room
   const onLeave = room => {
     socket.emit('rooms:leave', { room, username });
-
     navigate('/');
+  };
+
+  // Sending notifications if user is not in browser
+  const sendNotifications = (message, user, room) => {
+    console.count(message);
+    if (document.hidden) {
+      console.log(document.hidden);
+      const notification = new Notification('New message received from Chat', {
+        body: `${user}: ${message}`
+      });
+
+      notification.onclick = () => {
+        window.open(`http://127.0.0.1:5173/chat/${username}/${room}`);
+      };
+    }
+  };
+
+  // Check If we have a permission every time
+  const askPermission = async (message, user, room) => {
+    if (!('Notification' in window)) {
+      alert('Notification is not supported in your browser');
+    }
+
+    if (Notification.permission === 'granted') {
+      sendNotifications(message, user, room);
+    } else {
+      await Notification.requestPermission(permission => {
+        if (permission === 'granted') {
+          sendNotifications(message, user, room);
+        }
+      });
+    }
   };
 
   // Joining the room
@@ -64,12 +97,24 @@ const Messages = () => {
         room: params.room
       });
     }
+
+    socket.io.on('reconnect', () => {
+      if (params.room && params.username) {
+        socket.emit('rooms:join', {
+          username: params.username,
+          room: params.room
+        });
+      }
+    });
   }, []);
 
   // Message handlers
   useEffect(() => {
-    socket.on('message:one', (message: IMessage) => {
+    socket.on('message:one', async (message: IMessage) => {
       setMessages(prevState => [...prevState, message]);
+      if (message.username !== username) {
+        await askPermission(message.message, message.username, room);
+      }
     });
 
     socket.emit('messages:list', '', messages => {
@@ -151,7 +196,7 @@ const Messages = () => {
               name="message"
               value={values.message}
               onChange={handleChange}
-              onKeyDown={handleTyping}
+              onKeyDown={startTyping}
               autoComplete="off"
               placeholder="Type your message"
               className="grow p-2 border border-gray-300 rounded-xl focus:outline-none"
