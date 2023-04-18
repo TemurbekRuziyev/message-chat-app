@@ -26,14 +26,8 @@
 * Go to the project directory
 
 ```bash
-  cd assessment
+  cd message-chat-app
 ```
-
-* Make sure you are using proper version of node ("node" specified version in "engines" from package.json)
-```bash
-  nvm use <node-version>
-```
-
 
 * Install dependencies
 
@@ -41,10 +35,10 @@
   yarn install
 ```
 
-* Start the server (json-server)
+* Start the server (in the server folder)
 
 ```bash
-  yarn server
+  yarn start
 ```
 
 * Start the React application
@@ -56,6 +50,6 @@
 
 ## Tech Stack
 
-**Client:** React, Vite, Typescript, React-query, Formik
+**Client:** React, Vite, Typescript, Formik
 
-**Server:** json-server
+**Server:** Express server
