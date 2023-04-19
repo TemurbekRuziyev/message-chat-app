@@ -4,7 +4,7 @@
 
 ## Documentation
 
-[Documentation](https://github.com/TemurbekRuziyev/assessment#readme)
+[Documentation](https://github.com/TemurbekRuziyev/message-chat-app#readme)
 
 
 ## Features
